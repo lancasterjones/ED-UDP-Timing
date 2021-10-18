@@ -1,16 +1,12 @@
 {
-  "name": "@voliware/electron-udp",
-  "version": "1.10.0",
-  "description": "A simple electron app to create UDP clients and servers to send and receive datagrams",
+  "name": "ed-udp",
+  "version": "0.0.7",
+  "description": "Pyramid UDP time receiver",
   "main": "index.js",
   "scripts": {
-    "build": "electron-packager .",
+    "builder": "electron-packager . ED-UDP --overwrite --asar --platform=win32 --arch=x64 --icon=icons/win/icon.ico --prune=true",
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Voliware/electron-udp.git"
   },
   "keywords": [
     "udp",
@@ -18,12 +14,8 @@
     "client",
     "electron"
   ],
-  "author": "Anthony Agostino",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Voliware/electron-udp/issues"
-  },
-  "homepage": "https://github.com/Voliware/electron-udp#readme",
+  "author": "Alex Lancaster",
+  "homepage": "https://equestrian.digital",
   "devDependencies": {
     "electron": "^11.0.4",
     "electron-packager": "^15.2.0"

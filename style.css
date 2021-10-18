@@ -1,0 +1,31 @@
+#timegroup {
+    background: black;
+    width: 200px;
+    padding: 15px;
+    font-family: "Bebas Neue";
+    color: white;
+    text-align: right;
+    height: 120px;
+    margin: 30px auto;
+  }
+  
+  #time {
+    font-size: 4em;
+    line-height: 1em;
+    padding: 3px;
+    height: 50px;
+  }
+
+  #type{
+      margin-top: 10px;
+  }
+
+  #ips{
+      width: 100%;
+      background-color: black;
+      color: white;
+      padding: 5px;
+      text-align: center;
+      font-weight: bold;
+      letter-spacing: 1px;
+  }

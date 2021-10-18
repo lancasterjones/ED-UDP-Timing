@@ -1,49 +1,137 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
-    <title>Electron UDP</title>
-    <meta name="viewport" content="viewport-fit=cover, width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <meta name="format-detection" content="telephone=no"/>
-    <meta name="msapplication-tap-highlight" content="no"/>
-    <meta name="apple-mobile-web-app-capable" content="yes"/>
-    <meta name="apple-mobile-web-app-title" content=""/>
+    <title>ED UDP</title>
+    <meta name="viewport"
+        content="viewport-fit=cover, width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="color-scheme" content="light dark">
     <meta name="description" content="">
     <meta name="author" content="">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"/>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
     <link rel="stylesheet" href="vendor/bootstrap.min.css">
     <link rel="stylesheet" href="vendor/bootstrap-icons.css">
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="css/client.css">
     <link rel="stylesheet" href="css/server.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-6">
+
+            <h2> <img src="assets/logo_outline.png" alt="" style="width: 100px;" width="50"> ED-UDP Timing v0.7</h2>
+        </div>
+        <div class="row">
+            <div class="col-4" style="margin-top: 25px;">
+                <div class="input-field col s12">
+                    <select name="shows" id="shows" class="form-select form-select-md mb-3"
+                        onchange="setShow(this.value)">
+                        <option value="" disable selected hidden>Select Show</option>
+                    </select>
+                </div>
+                <div class="input-field col s12">
+                    <select name="pruebas" id="pruebas" class="form-select form-select-md mb-3" disabled
+                        onchange="setCompetition(this.value)">
+                        <option value="" disable selected>Class</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-4">
+                <div id="timegroup">
+                    <div id="time">-</div>
+                    <div id="bar">
+                        <!--div class="progress progress-moved">
+                            <div id="progress-bar">
+                            </div>
+                        </div-->
+                    </div>
+                    <div id="diff"></div>
+                    <div id='type'></div>
+
+                </div>
+
+
+            </div>
+            <div class="col-2" style="margin-top: 45px;">
+                <button type="button" class="btn btn-sm btn-primary" onclick="saveTime('','running')"
+                    value="positions">Clear
+                    Time</button>
+
+
+
+            </div>
+        </div>
+        <div class="row">
+            <!-- <div class="col-6">
                 <div class="d-flex mb-2">
                     <div class="flex-50">
                         <h5>UDP Clients</h5>
                     </div>
                     <div class="flex-50 text-end">
-                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#client-modal">Add</button>
-                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#generator-modal">Generate Data</button>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#client-modal">Add</button>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#generator-modal">Generate Data</button>
                     </div>
                 </div>
                 <div id="clients"></div>
-            </div>
+            </div> -->
             <div class="col-6">
                 <div class="d-flex mb-2">
                     <div class="flex-50">
-                        <h5>UDP Servers</h5>
+                        <h5>Start Listener</h5>
                     </div>
                     <div class="flex-50 text-end">
-                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#server-modal">Add</button>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#server-modal">Start</button>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-12" id="ips">
+                        IPs:
                     </div>
                 </div>
+                <br>
+                <div class="">Ignore if: <input type="text" id="ignoreString"></div>
                 <div id="servers"></div>
+            </div>
+            <div class="col-6">
+                <div class="flex-50">
+                    <h5>Controls</h5>
+                </div>
+                <input type="radio" class="btn-check" name="group2" value="intro" id="intro" autocomplete="off"
+                    onchange="setGraphics()">
+                <label class="btn btn-outline-success" for="intro">Intro</label><br><br>
+                <input type="radio" class="btn-check" name="group2" value="inRing" id="inRing" autocomplete="off"
+                    onchange="setGraphics()">
+                <label class="btn btn-outline-success" for="inRing">In Ring</label>
+                <input type="radio" class="btn-check" name="group2" value="noHorse" id="noHorse" autocomplete="off"
+                    onchange="setGraphics()">
+                <label class="btn btn-outline-success" for="noHorse">No Name</label><br><br>
+                <input type="radio" class="btn-check" name="group2" value="positions" id="positions" autocomplete="off"
+                    onchange="setGraphics()">
+                <label class="btn btn-outline-success" for="positions">Pos. 1</label>
+                <input type="radio" class="btn-check" name="group2" value="positions2" id="positions2"
+                    autocomplete="off" onchange="setGraphics()">
+                <label class="btn btn-outline-success" for="positions2">Pos. 2</label><br>
+                <input type="radio" class="btn-check" name="group2" value="positions3" id="positions3"
+                    autocomplete="off" onchange="setGraphics()">
+                <label class="btn btn-outline-success" for="positions3">Pos. 3</label>
+                <input type="radio" class="btn-check" name="group2" value="positions4" id="positions4"
+                    autocomplete="off" onchange="setGraphics()">
+                <label class="btn btn-outline-success" for="positions4">Pos. 4</label><br><br>
+                <input type="radio" class="btn-check" name="group2" value="end" id="end" autocomplete="off"
+                    onchange="setGraphics()">
+                <label class="btn btn-outline-success" for="end">End</label>
             </div>
         </div>
     </div>
@@ -57,7 +145,8 @@
                 <div class="modal-body">
                     <div id="generator">
                         <div class="d-grid gap-2 mb-2">
-                            <textarea name="random" class="form-control" placeholder="Press the Generate Button"></textarea>
+                            <textarea name="random" class="form-control"
+                                placeholder="Press the Generate Button"></textarea>
                             <input name="length" type="number" class="form-control" value="128">
                             <button type="button" name="generate" class="btn btn-sm btn-primary">Generate</button>
                             <button type="button" name="copy" class="btn btn-sm btn-primary">Copy to Clipboard</button>
@@ -90,7 +179,8 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Remote Port</label>
-                            <input type="number" name="remote.port" class="form-control" min="0" max="65535" value="35000">
+                            <input type="number" name="remote.port" class="form-control" min="0" max="65535"
+                                value="35000">
                         </div>
                         <button type="submit" class="btn btn-success">Submit</button>
                     </form>
@@ -113,7 +203,8 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Local Port</label>
-                            <input type="number" name="local.port" class="form-control" min="0" max="65535" value="35000">
+                            <input type="number" name="local.port" class="form-control" min="0" max="65535"
+                                value="35000">
                         </div>
                         <button type="submit" class="btn btn-success">Submit</button>
                     </form>
@@ -203,10 +294,17 @@
     <script src="js/clientElement.js"></script>
     <script src="js/client.js"></script>
     <script src="js/clientManager.js"></script>
+
+    <script src="js/firebase-app.js"></script>
+    <script src="js/firebase-firestore.js"></script>
+    <script src="js/firebase.js"></script>
+    <script src="js/save.js"></script>
     <script src="js/serverElement.js"></script>
     <script src="js/server.js"></script>
     <script src="js/serverManager.js"></script>
+    <script src="js/network.js"></script>
     <script src="js/app.js"></script>
     <script>const app = new App();</script>
 </body>
+
 </html>
