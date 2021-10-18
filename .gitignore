@@ -106,3 +106,4 @@ dist
 # Dist files
 electron-udp-win32-x64
 electron-udp.code-workspace
+ED-UDP-win32-x64
