@@ -26,8 +26,7 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-
-            <h2> <img src="assets/logo_outline.png" alt="" style="width: 100px;" width="50"> ED-UDP Timing v0.7</h2>
+            <h2> <img src="assets/logo_outline.png" alt="" style="width: 100px;" width="50"> ED-UDP Timing v1.3</h2>
         </div>
         <div class="row">
             <div class="col-4" style="margin-top: 25px;">
@@ -54,16 +53,27 @@
                         </div-->
                     </div>
                     <div id="diff"></div>
-                    <div id='type'></div>
+                    <div id="type"></div>
 
+                </div>
+                <div style="text-align: center;">
+                    <button type="button" class="btn btn-sm btn-alt"
+                        style="background: green; color: white; float: left;" onclick="reduceTime()"
+                        value="reduceTime">-3</button>
+                    <div id='addedTime' style="width: 132px; float: left;">0</div>
+                    <button type="button" class="btn btn-sm btn-alt"
+                        style="background: green; color: white; float: left;" onclick="addTime()"
+                        value="addTime">+3</button>
                 </div>
 
 
             </div>
             <div class="col-2" style="margin-top: 45px;">
                 <button type="button" class="btn btn-sm btn-primary" onclick="saveTime('','running')"
-                    value="positions">Clear
-                    Time</button>
+                    value="positions">Clear Time</button>
+
+
+
 
 
 
@@ -86,10 +96,10 @@
             </div> -->
             <div class="col-6">
                 <div class="d-flex mb-2">
-                    <div class="flex-50">
+                    <div class="flex-50 mt-2">
                         <h5>Start Listener</h5>
                     </div>
-                    <div class="flex-50 text-end">
+                    <div class="flex-50 text-end mt-2">
                         <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                             data-bs-target="#server-modal">Start</button>
                     </div>
@@ -180,7 +190,7 @@
                         <div class="mb-3">
                             <label class="form-label">Remote Port</label>
                             <input type="number" name="remote.port" class="form-control" min="0" max="65535"
-                                value="35000">
+                                value="29696">
                         </div>
                         <button type="submit" class="btn btn-success">Submit</button>
                     </form>
@@ -204,7 +214,7 @@
                         <div class="mb-3">
                             <label class="form-label">Local Port</label>
                             <input type="number" name="local.port" class="form-control" min="0" max="65535"
-                                value="35000">
+                                value="29696">
                         </div>
                         <button type="submit" class="btn btn-success">Submit</button>
                     </form>

@@ -110,6 +110,7 @@ function setGraphics() {
 function saveFirebase(time) {
     console.log("Concurso: " + idConcurso);
     console.log("Prueba: " + idPrueba);
+    time = Number.parseFloat(time).toFixed(2).toString();
 
     db.collection('concursos/' + idConcurso + '/pruebas/').doc(idPrueba).set({
         tiempoFinal: time

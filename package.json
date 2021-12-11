@@ -1,7 +1,7 @@
 {
   "name": "ed-udp",
-  "version": "0.0.7",
-  "description": "Pyramid UDP time receiver",
+  "version": "0.1.3",
+  "description": "UDP time receiver",
   "main": "index.js",
   "scripts": {
     "builder": "electron-packager . ED-UDP --overwrite --asar --platform=win32 --arch=x64 --icon=icons/win/icon.ico --prune=true",
@@ -12,7 +12,9 @@
     "udp",
     "server",
     "client",
-    "electron"
+    "electron",
+    "ryegate",
+    "broder"
   ],
   "author": "Alex Lancaster",
   "homepage": "https://equestrian.digital",
