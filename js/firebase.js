@@ -17,11 +17,7 @@ var concursosDropDown = document.getElementById('concursos');
 //var colRef = db.collection(pais);
 
 var coleccionConcursos = db.collection('concursos')
-    .where("id", 'in', ['732',
-        '670',
-        '649',
-        '677',
-        '676']).orderBy('inicio')
+    .where("id", 'in', ['807']).orderBy('inicio')
 var timeAllowed;
 var idPrueba;
 var idConcurso;
@@ -108,8 +104,8 @@ function setGraphics() {
 }
 
 function saveFirebase(time) {
-    console.log("Concurso: " + idConcurso);
-    console.log("Prueba: " + idPrueba);
+    //console.log("Concurso: " + idConcurso);
+    //console.log("Prueba: " + idPrueba);
     time = Number.parseFloat(time).toFixed(2).toString();
 
     db.collection('concursos/' + idConcurso + '/pruebas/').doc(idPrueba).set({

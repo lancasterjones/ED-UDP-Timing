@@ -1,6 +1,6 @@
 {
   "name": "ed-udp",
-  "version": "0.1.3",
+  "version": "0.2.2",
   "description": "UDP time receiver",
   "main": "index.js",
   "scripts": {

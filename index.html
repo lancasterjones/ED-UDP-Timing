@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>ED UDP</title>
+    <title>ED - Ryegate Interface</title>
     <meta name="viewport"
         content="viewport-fit=cover, width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="format-detection" content="telephone=no" />
@@ -26,10 +26,11 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <h2> <img src="assets/logo_outline.png" alt="" style="width: 100px;" width="50"> ED-UDP Timing v1.3</h2>
+            <h2> <img src="assets/logo_outline.png" alt="" style="width: 50px;" width="50"> ED-Ryegate Interface v2.2
+            </h2>
         </div>
         <div class="row">
-            <div class="col-4" style="margin-top: 25px;">
+            <div class="col-5" style="margin-top: 25px;">
                 <div class="input-field col s12">
                     <select name="shows" id="shows" class="form-select form-select-md mb-3"
                         onchange="setShow(this.value)">
@@ -43,7 +44,8 @@
                     </select>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-1"></div>
+            <div class="col-5">
                 <div id="timegroup">
                     <div id="time">-</div>
                     <div id="bar">
@@ -52,23 +54,27 @@
                             </div>
                         </div-->
                     </div>
-                    <div id="diff"></div>
                     <div id="type"></div>
+                    <div id="faults"></div>
+                    <div id="entry"></div>
+                    <div id="rider"></div>
+                    <div id="diff"></div>
+
 
                 </div>
-                <div style="text-align: center;">
+                <div>
+                    <button type="button" class="btn btn-sm btn-alt" style="background: red; color: white; float: left;"
+                        onclick="reduceTime()" value="reduceTime">-3</button>
+                    <button class="btn btn-sm btn-alt text-center" id='addedTime'
+                        style="background: black; color: white; float: left; width: 30%; margin-left: 32px;font-weight: bold ;">0</button>
                     <button type="button" class="btn btn-sm btn-alt"
-                        style="background: green; color: white; float: left;" onclick="reduceTime()"
-                        value="reduceTime">-3</button>
-                    <div id='addedTime' style="width: 132px; float: left;">0</div>
-                    <button type="button" class="btn btn-sm btn-alt"
-                        style="background: green; color: white; float: left;" onclick="addTime()"
+                        style="background: green; color: white; float: left;margin-left: 32px;" onclick="addTime()"
                         value="addTime">+3</button>
                 </div>
 
 
             </div>
-            <div class="col-2" style="margin-top: 45px;">
+            <!-- <div class="col-2" style="margin-top: 45px;">
                 <button type="button" class="btn btn-sm btn-primary" onclick="saveTime('','running')"
                     value="positions">Clear Time</button>
 
@@ -77,7 +83,7 @@
 
 
 
-            </div>
+            </div> -->
         </div>
         <div class="row">
             <!-- <div class="col-6">
@@ -114,7 +120,7 @@
                 <div class="">Ignore if: <input type="text" id="ignoreString"></div>
                 <div id="servers"></div>
             </div>
-            <div class="col-6">
+            <div class="col-6 mt-3">
                 <div class="flex-50">
                     <h5>Controls</h5>
                 </div>

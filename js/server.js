@@ -67,6 +67,43 @@ class Server extends Socket {
         // On message append to the messages textarea
         this.socket.on('message', (message, rinfo) => {
 
+
+            let originalString = message.toString().replace(/[\u0000-\u001F\u007F-\u009F]/g, ""); // Remove special characters
+            console.log('Original', originalString);
+
+            // Convert to JSON
+            let formatted = originalString.replace(/{/g, '{"').replace(/}/g, '":"').replace(/{/g, '",').replace(/^\",/, '');
+            let jsonString = ('{').concat(formatted, '"}');
+            //console.log('JSON:', jsonString);
+            let json = JSON.parse(jsonString);
+
+            // Mapping (Ryegate)
+            let backNumber = json[1];
+            let horse = json[2];
+            let rider = json[3];
+            let jumpFaults = json[14] ? json[14].replace('JUMP', '') : '';
+            let jsonTime = json[17] ? json[17] : json[23];
+            let faultsDiv = document.getElementById('faults');
+            let entryDiv = document.getElementById('entry');
+            let riderDiv = document.getElementById('rider');
+            faultsDiv.innerHTML = 'Faults: <span style="color:red">' + jumpFaults + '<span>';
+            entryDiv.innerHTML = '<span style="color:red">' + backNumber + '</span> - ' + horse;
+            riderDiv.innerHTML = rider;
+
+            // Identify type
+            if (jsonTime.toString().indexOf(".") != -1) {
+                type = 'FINAL';
+            } else if (jsonTime.toString().indexOf("-") != -1) {
+                type = 'CD';
+            } else {
+                type = 'RUNN.';
+            };
+
+
+
+
+
+
             ignoreString = document.getElementById('ignoreString').value;
             //console.log("Ignore if " + ignoreString);
 
@@ -84,6 +121,11 @@ class Server extends Socket {
                 console.log("Row ignored");
 
             } else {
+                //time = Number.parseFloat(time) + addedTime;
+                jsonTime = Number.parseFloat(jsonTime) + addedTime;
+                saveTime(jsonTime, type);
+
+                /* 
                 //console.log("Not ignored");
                 //console.log(message);
 
@@ -109,7 +151,7 @@ class Server extends Socket {
                     console.log('Final time');
                     type = 'FINAL';
                     var lastkey = message.toString().lastIndexOf('{') + 1;
-                    time = message.toString().substr(lastkey - 7, 7).replace('}', '').replace('{', '');
+                    time = message.toString().substr(lastkey - 8, 7).replace('}', '').replace('{', '');
                     if (time.indexOf('Elim') != -1) {
                         console.log('Eliminated');
                         time = '0';
@@ -145,8 +187,10 @@ class Server extends Socket {
                 }
 
                 time = Number.parseFloat(time) + addedTime;
-                saveTime(time, type);
-
+                jsonTime = Number.parseFloat(jsonTime) + addedTime;
+                //saveTime(time, type);
+                saveTime(jsonTime, type);
+*/
 
                 // Broder Software //
                 /*
