@@ -9,7 +9,7 @@ const { clipboard } = require('electron')
 
 function saveTime(time, type) {
 
-    //console.log(time, type);
+    console.log(time, type);
     //console.log("LiveTime: " + liveTime);
     //console.log("AppTime: " + appTime);
     timeDiv.innerHTML = time;
@@ -24,6 +24,7 @@ function saveTime(time, type) {
     if (type == "FINAL") {
         saveFirebase(time);
         clipboard.writeText(time.toString());
+
     } else {
     }
 };

@@ -17,7 +17,7 @@ var concursosDropDown = document.getElementById('concursos');
 //var colRef = db.collection(pais);
 
 var coleccionConcursos = db.collection('concursos')
-    .where("id", 'in', ['807']).orderBy('inicio')
+    .where("id", 'in', ['us_449', 'us_450']).orderBy('inicio')
 var timeAllowed;
 var idPrueba;
 var idConcurso;
@@ -79,7 +79,7 @@ function setCompetition(classId) {
     }, { merge: true })
         .then(function () {
             console.log("Document successfully written!");
-            document.getElementById("opcionesVistas").style.display = 'block';
+            //document.getElementById("opcionesVistas").style.display = 'block';
             getTA();
         })
         .catch(function (error) {

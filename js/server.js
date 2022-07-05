@@ -63,44 +63,143 @@ class Server extends Socket {
         var type = '';
         var time;
         var ignoreString = document.getElementById('ignoreString').value;
+        var timer = 'pyramid';
+        let jsonTime = '';
 
         // On message append to the messages textarea
         this.socket.on('message', (message, rinfo) => {
+            console.log('New message');
+
+            if (timer == 'ryegate') {
+                let originalString = message.toString().replace(/[\u0000-\u001F\u007F-\u009F]/g, ""); // Remove special characters
+                console.log('Ryegate', originalString);
+
+                // Convert to JSON
+                let formatted = originalString.replace(/{/g, '{"').replace(/}/g, '":"').replace(/{/g, '",').replace(/^\",/, '');
+                let jsonString = ('{').concat(formatted, '"}');
+                //console.log('JSON:', jsonString);
+                let json = JSON.parse(jsonString);
+
+                // Mapping (Ryegate)
+                let backNumber = json[1];
+                let horse = json[2];
+                let rider = json[3];
+                let jumpFaults = json[14] ? json[14].replace('JUMP', '') : '';
+                jsonTime = json[17] ? json[17] : json[23];
+                let faultsDiv = document.getElementById('faults');
+                let entryDiv = document.getElementById('entry');
+                let riderDiv = document.getElementById('rider');
+                faultsDiv.innerHTML = 'Faults: <span style="color:red">' + jumpFaults + '<span>';
+                entryDiv.innerHTML = '<span style="color:red">' + backNumber + '</span> - ' + horse;
+                riderDiv.innerHTML = rider;
+
+                // Identify type
+                if (jsonTime.toString().indexOf(".") != -1) {
+                    type = 'FINAL';
+                } else if (jsonTime.toString().indexOf("-") != -1) {
+                    type = 'CD';
+                } else {
+                    type = 'RUNN.';
+                };
+            } else if (timer == 'pyramid') {
+                /** Sample string 
+                    007    11:31:04    502  518GUSTAVO PRATO                 KING VAN HET KEIZERSHOF          120                    73.02                   1     73.02$36,600 STALLER 1.45M SPEED 239                                                                                                            
+                    007         Message code (if ending with 07, running or final time)
+                    11:31:04    Time of Day
+                    502         ????
+                    518         Entry
+                    Gustavo..   Rider
+                    King Van..  Horse
+                    120         Time Allowed
+                    73.02       Rider Time
+                    1           Rank
+                    73.02       Total Time
+                    $36,000...  Class Name
+
+                    Sample 2
+                    807    11:28:52    502  841SHAWN CASADY                  CAPTAIN JACK                     120                    80.33    8         8    4     88.33$36,600 STALLER 1.45M SPEED 239                                                                                                            
+                    807         Message code (if ending with 07, running or final time)
+                    11:28:52    Time of Day
+                    502         ????
+                    841         Entry
+                    Shawn..     Rider
+                    Captain...  Horse
+                    120         Time Allowed
+                    80.33       Rider Time
+                    8           Faults ??
+                    8           More faults ???
+                    4           ???
+                    1           Rank
+                    73.02       Total Time
+                    $36,000...  Class Name
 
 
-            let originalString = message.toString().replace(/[\u0000-\u001F\u007F-\u009F]/g, ""); // Remove special characters
-            console.log('Original', originalString);
+                    Sample String CD
+                    706    11:27:31    502  841SHAWN CASADY                  CAPTAIN JACK                     120                  26          $36,600 STALLER 1.45M SPEED 239                                                                                                                                     
+                    706         Message Code (ending with 06 stands for countdown)
+                    11:27:31    Time of Day
+                    502         ???
+                    841         Entry
+                    Shawn...    Rider Name
+                    Captain...  Horse Name
+                    120         Time Allowed
+                    26          Countdown time
+                    $36,000     Class Name
+                */
+                let originalString = message.toString(); /*.replace(/[\u0000-\u001F\u007F-\u009F]/g, "");*/ // Remove special characters
+                console.log('Pyramid', originalString);
 
-            // Convert to JSON
-            let formatted = originalString.replace(/{/g, '{"').replace(/}/g, '":"').replace(/{/g, '",').replace(/^\",/, '');
-            let jsonString = ('{').concat(formatted, '"}');
-            //console.log('JSON:', jsonString);
-            let json = JSON.parse(jsonString);
-
-            // Mapping (Ryegate)
-            let backNumber = json[1];
-            let horse = json[2];
-            let rider = json[3];
-            let jumpFaults = json[14] ? json[14].replace('JUMP', '') : '';
-            let jsonTime = json[17] ? json[17] : json[23];
-            let faultsDiv = document.getElementById('faults');
-            let entryDiv = document.getElementById('entry');
-            let riderDiv = document.getElementById('rider');
-            faultsDiv.innerHTML = 'Faults: <span style="color:red">' + jumpFaults + '<span>';
-            entryDiv.innerHTML = '<span style="color:red">' + backNumber + '</span> - ' + horse;
-            riderDiv.innerHTML = rider;
-
-            // Identify type
-            if (jsonTime.toString().indexOf(".") != -1) {
-                type = 'FINAL';
-            } else if (jsonTime.toString().indexOf("-") != -1) {
-                type = 'CD';
-            } else {
-                type = 'RUNN.';
-            };
+                let messageCode = originalString.substring(2, 3);
+                console.log('MessageCode', messageCode);
 
 
+                // Message code 6 = Countdown
+                // Message code 7 = Running / Finished
+                // Message code 8 = Running 2nd Phase
+                // Message code 9 = Standings table
 
+                let splitMessage = originalString.trim().split(/\s\s+/);
+                if (messageCode == 7 || messageCode == 8) {
+                    // Running Time Mapping
+                    let backNumber = splitMessage[3].substring(0, 3);
+                    let horse = splitMessage[4];
+                    let rider = splitMessage[3].substring(3);
+                    let jumpFaults = originalString.substring(120, 130).trim();
+                    jsonTime = originalString.substring(141, 148).trim();
+                    let faultsDiv = document.getElementById('faults');
+                    let entryDiv = document.getElementById('entry');
+                    let riderDiv = document.getElementById('rider');
+                    faultsDiv.innerHTML = 'Faults: <span style="color:red">' + jumpFaults + '<span>';
+                    entryDiv.innerHTML = '<span style="color:red">' + backNumber + '</span> - ' + horse;
+                    riderDiv.innerHTML = rider;
+
+                    if (jsonTime.toString().indexOf(".") != -1) {
+                        type = 'FINAL';
+                    } else {
+                        type = 'RUNN.';
+                    }
+                } else if (messageCode == 6) {
+                    // Countdown
+                    type = 'CD';
+                    let backNumber = splitMessage[3].substring(0, 3);
+                    let horse = splitMessage[4];
+                    let rider = splitMessage[3].substring(3);
+                    let jumpFaults = 0;
+                    jsonTime = originalString.substring(111, 118).trim();
+                    let faultsDiv = document.getElementById('faults');
+                    let entryDiv = document.getElementById('entry');
+                    let riderDiv = document.getElementById('rider');
+                    faultsDiv.innerHTML = 'Faults: <span style="color:red">' + jumpFaults + '<span>';
+                    entryDiv.innerHTML = '<span style="color:red">' + backNumber + '</span> - ' + horse;
+                    riderDiv.innerHTML = rider;
+                } else {
+                    return;
+                }
+
+
+
+
+            }
 
 
 
@@ -121,111 +220,10 @@ class Server extends Socket {
                 console.log("Row ignored");
 
             } else {
+                console.log('Row not ignored');
                 //time = Number.parseFloat(time) + addedTime;
                 jsonTime = Number.parseFloat(jsonTime) + addedTime;
                 saveTime(jsonTime, type);
-
-                /* 
-                //console.log("Not ignored");
-                //console.log(message);
-
-                // Ryegate Software //
-                type = 'RUNN.';
-                var messageIndex = message.toString().lastIndexOf('{') + 1;
-                //console.log("Message Index: " + messageIndex);
-                messageCode = message.toString().substr(messageIndex, 2).replace('{', '').replace('}', '');
-                //console.log("Message Code: " + messageCode);
-
-                // Mesagecode 23 -> Countdown
-
-                // Messagecode 17 -> Running
-
-                // Messagecode 8 -> Final
-
-                // Messacode 18 -> Horse switch
-                if (messageCode == 18) {
-                    time = '45';
-                    type = 'New Rider';
-                    resetAddedTime();
-                } else if (messageCode == 8) {
-                    console.log('Final time');
-                    type = 'FINAL';
-                    var lastkey = message.toString().lastIndexOf('{') + 1;
-                    time = message.toString().substr(lastkey - 8, 7).replace('}', '').replace('{', '');
-                    if (time.indexOf('Elim') != -1) {
-                        console.log('Eliminated');
-                        time = '0';
-                        type = 'ELIMINATED'
-                    } else if (message.toString().indexOf('Ret') != -1) {
-                        console.log('Retired');
-                        type = 'FINAL';
-                        time = '0';
-                    }
-                } else if (message.toString().indexOf('Elim') != -1) {
-                    console.log('Eliminated');
-                    type = 'FINAL';
-                    time = '0';
-                } else {
-                    var lastkey = message.toString().lastIndexOf('}') + 1;
-                    //console.log('Last Key');
-                    //console.log(lastkey);
-                    var timeString = message.toString().substr(lastkey, 5);
-                    //console.log("Timestring");
-                    //console.log(timeString);
-
-                    if (timeString.indexOf('-') != -1) {
-                        type = 'CD';
-                        time = timeString.replace('-', '');
-                        resetAddedTime();
-                    } else if (timeString.indexOf('TA:') != -1) {
-                        console.log('Ignore or white space');
-                        time = '';
-                    } else {
-                        time = timeString;
-                    }
-
-                }
-
-                time = Number.parseFloat(time) + addedTime;
-                jsonTime = Number.parseFloat(jsonTime) + addedTime;
-                //saveTime(time, type);
-                saveTime(jsonTime, type);
-*/
-
-                // Broder Software //
-                /*
-                
-                if (messageCode != '9') {
-                    if (messageCode == '6') { // Countdown (falta validar con nombres de pruebas)
-                        type = 'countdown';
-                        time = message.toString().substring(109, 114).trim().replace('$', '');
-
-                        // Quitar signo $ y caracteres posteriores
-                    } else if (messageCode == '7') { // Round 1
-                        console.log('running round 1');
-                        time = message.toString().substring(109, 119).trim();
-                        // checar si tiene decimales
-                        if (time.indexOf('.') > -1) {
-                            type = 'final';
-                        } else {
-                            type = 'running';
-                        }
-
-                    } else if (messageCode == '8') {
-                        time = message.toString().substring(141, 149).trim();
-                        // checar si tiene decimales
-                        if (time.indexOf('.') > -1) {
-                            type = 'final';
-                        } else {
-                            type = 'running';
-                        }
-
-                    }
-                    saveTime(time, type);
-
-                }
-                */
-
             }
 
 
