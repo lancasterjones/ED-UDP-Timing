@@ -63,16 +63,16 @@ class Server extends Socket {
         var type = '';
         var time;
         var ignoreString = document.getElementById('ignoreString').value;
-        var timer = 'pyramid';
+        var timer = 'broder';
         let jsonTime = '';
 
         // On message append to the messages textarea
         this.socket.on('message', (message, rinfo) => {
-            console.log('New message');
+            //console.log('New message');
 
             if (timer == 'ryegate') {
                 let originalString = message.toString().replace(/[\u0000-\u001F\u007F-\u009F]/g, ""); // Remove special characters
-                console.log('Ryegate', originalString);
+                // console.log('Ryegate', originalString);
 
                 // Convert to JSON
                 let formatted = originalString.replace(/{/g, '{"').replace(/}/g, '":"').replace(/{/g, '",').replace(/^\",/, '');
@@ -147,10 +147,10 @@ class Server extends Socket {
                     $36,000     Class Name
                 */
                 let originalString = message.toString(); /*.replace(/[\u0000-\u001F\u007F-\u009F]/g, "");*/ // Remove special characters
-                console.log('Pyramid', originalString);
+                //console.log('Pyramid', originalString);
 
                 let messageCode = originalString.substring(2, 3);
-                console.log('MessageCode', messageCode);
+                // console.log('MessageCode', messageCode);
 
 
                 // Message code 6 = Countdown
@@ -196,40 +196,71 @@ class Server extends Socket {
                     return;
                 }
 
+            } else if (timer == 'broder') {
 
+                let originalString = message.toString(); /*.replace(/[\u0000-\u001F\u007F-\u009F]/g, "");*/ // Remove special characters
+                let messageCode = originalString.substring(3, 6);
+                let jumpFaults = '';
+                let backNumber = '';
+                let rider = '-';
+                let horse = '-';
 
+                if (messageCode == 400) {
+                    type = 'RUNN.';
+                    jsonTime = originalString.substring(33, 40);
+                    jumpFaults = originalString.substring(83, 90);
+                    backNumber = originalString.substring(183, 190);
+                    rider = originalString.substring(258, 270);
+                    horse = originalString.substring(283, 300);
+                } else if (messageCode == 300) {
+                    type = 'CD';
+                    jsonTime = originalString.substring(58, 61);
+                    backNumber = originalString.substring(108, 115);
+                    rider = originalString.substring(178, 205);
+                    horse = originalString.substring(208, 230);
+                } else if (messageCode == 900) {
+                    type = 'FINAL';
+                    jsonTime = originalString.substring(33, 40);
+                    jumpFaults = originalString.substring(83, 90);
+                    backNumber = originalString.substring(183, 190);
+                    rider = originalString.substring(258, 270);
+                    horse = originalString.substring(283, 300);
+                } else if (messageCode == 200) {
+                    //console.log('Code', messageCode);
+                    jsonTime = 45;
+                    type = 'CD';
+                } else {
+                    console.log('Unknown Message: ', originalString);
+                    this.element.appendMessage(message, rinfo)
+                }
 
+                let faultsDiv = document.getElementById('faults');
+                let entryDiv = document.getElementById('entry');
+                let riderDiv = document.getElementById('rider');
+                faultsDiv.innerHTML = 'Faults: <span style="color:red">' + jumpFaults + '<span>';
+                entryDiv.innerHTML = '<span style="color:red">' + backNumber + '</span> - ' + horse;
+                riderDiv.innerHTML = rider;
             }
-
 
 
             ignoreString = document.getElementById('ignoreString').value;
             //console.log("Ignore if " + ignoreString);
 
 
-            var length = message.toString().trim().length;
-            var messageCode = message.toString().trim().substring(0, 1);
-
-            //console.log('Length: ' + length);
-            this.element.appendMessage(message, rinfo)
+            // this.element.appendMessage(message, rinfo)
             //console.log('Message Received: ' + message);
 
             //console.log('Position: ' + messageCode);
 
             if (message.toString().indexOf(ignoreString) > -1 && ignoreString.length > 1) {
-                console.log("Row ignored");
+                // console.log("Row ignored");
 
             } else {
-                console.log('Row not ignored');
+                //console.log('Row not ignored');
                 //time = Number.parseFloat(time) + addedTime;
                 jsonTime = Number.parseFloat(jsonTime) + addedTime;
                 saveTime(jsonTime, type);
             }
-
-
-
-
-
 
 
         });
