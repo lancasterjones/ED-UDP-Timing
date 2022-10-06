@@ -19,7 +19,7 @@ function saveTime(time, type) {
     //updateBar(time, type);
 
     saveLiveTime(time);
-    saveAppTime(time.toString());
+    //saveAppTime(time.toString());
 
     if (type == "FINAL") {
         saveFirebase(time);

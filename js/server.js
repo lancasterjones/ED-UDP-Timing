@@ -63,7 +63,7 @@ class Server extends Socket {
         var type = '';
         var time;
         var ignoreString = document.getElementById('ignoreString').value;
-        var timer = 'broder';
+        var timer = 'pyramid';
         let jsonTime = '';
 
         // On message append to the messages textarea
@@ -147,10 +147,10 @@ class Server extends Socket {
                     $36,000     Class Name
                 */
                 let originalString = message.toString(); /*.replace(/[\u0000-\u001F\u007F-\u009F]/g, "");*/ // Remove special characters
-                //console.log('Pyramid', originalString);
+                console.log('Pyramid', originalString);
 
                 let messageCode = originalString.substring(2, 3);
-                // console.log('MessageCode', messageCode);
+                console.log('MessageCode', messageCode);
 
 
                 // Message code 6 = Countdown
@@ -159,11 +159,30 @@ class Server extends Socket {
                 // Message code 9 = Standings table
 
                 let splitMessage = originalString.trim().split(/\s\s+/);
-                if (messageCode == 7 || messageCode == 8) {
+                if (messageCode == 7) {
                     // Running Time Mapping
-                    let backNumber = splitMessage[3].substring(0, 3);
-                    let horse = splitMessage[4];
-                    let rider = splitMessage[3].substring(3);
+                    let backNumber = originalString.substring(23, 27).trim();
+                    let horse = originalString.substring(57, 87).trim();
+                    let rider = originalString.substring(27, 57).trim();
+                    let jumpFaults = originalString.substring(120, 130).trim();
+                    jsonTime = originalString.substring(111, 119).trim();
+                    let faultsDiv = document.getElementById('faults');
+                    let entryDiv = document.getElementById('entry');
+                    let riderDiv = document.getElementById('rider');
+                    faultsDiv.innerHTML = 'Faults: <span style="color:red">' + jumpFaults + '<span>';
+                    entryDiv.innerHTML = '<span style="color:red">' + backNumber + '</span> - ' + horse;
+                    riderDiv.innerHTML = rider;
+
+                    if (jsonTime.toString().indexOf(".") != -1) {
+                        type = 'FINAL';
+                    } else {
+                        type = 'RUNN.';
+                    }
+                } else if (messageCode == 8) {
+                    // Running Time Mapping
+                    let backNumber = originalString.substring(23, 27).trim();
+                    let horse = originalString.substring(57, 87).trim();
+                    let rider = originalString.substring(27, 57).trim();
                     let jumpFaults = originalString.substring(120, 130).trim();
                     jsonTime = originalString.substring(141, 148).trim();
                     let faultsDiv = document.getElementById('faults');
@@ -181,11 +200,14 @@ class Server extends Socket {
                 } else if (messageCode == 6) {
                     // Countdown
                     type = 'CD';
-                    let backNumber = splitMessage[3].substring(0, 3);
-                    let horse = splitMessage[4];
-                    let rider = splitMessage[3].substring(3);
+                    let backNumber = originalString.substring(23, 27);
+                    let horse = originalString.substring(57, 87);
+                    let rider = originalString.substring(27, 57);
                     let jumpFaults = 0;
-                    jsonTime = originalString.substring(111, 118).trim();
+                    jsonTime = originalString.substring(111, 113).trim();
+
+                    console.log('JSON TIME: ', jsonTime);
+
                     let faultsDiv = document.getElementById('faults');
                     let entryDiv = document.getElementById('entry');
                     let riderDiv = document.getElementById('rider');
@@ -247,7 +269,7 @@ class Server extends Socket {
             //console.log("Ignore if " + ignoreString);
 
 
-            // this.element.appendMessage(message, rinfo)
+            this.element.appendMessage(message, rinfo)
             //console.log('Message Received: ' + message);
 
             //console.log('Position: ' + messageCode);
